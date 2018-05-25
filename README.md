@@ -148,7 +148,6 @@ extension CHKLineChartStyle {
     }()
 }
 ```
--
-```
-# 该项目属于二次开发，基于一个`swift`版 `K线` 项目开发
+---
+### 该项目属于二次开发，基于一个`swift`版 `K线` 项目开发
 [项目地址](https://github.com/zhiquan911/CHKLineChart)
