@@ -1,4 +1,6 @@
 # DepthChart 深度图
+***注意：该深度图横坐标是以档位为单位，纵坐标是以档位数量为单位***
+---
 ![image](https://github.com/mqtJS/DepthChart/blob/master/2018-05-25%2016_43_00.gif)
 ---
 ### 1、实现代理
