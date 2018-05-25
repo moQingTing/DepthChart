@@ -274,7 +274,7 @@ extension CHKLineChartStyle {
         style.showYAxisLabel = .right
         
         /// 买单居右
-        style.bidChartOnDirection = .left
+        style.bidChartOnDirection = .right
         
         //边界宽度
         style.borderWidth = (0, 0, 0, 0)
