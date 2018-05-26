@@ -115,7 +115,27 @@ extension ViewController: CHKDepthChartDelegate {
 }
 ```
 ---
-### 2、自定义样式
+### 2、自定义点击显示view
+```swift
+/**
+     自定义点击显示信息view
+     - parameter chart:
+     
+     - returns:
+     */
+    @objc optional func depthChartShowItemView(chart: CHDepthChartView,Selected item: CHKDepthChartItem) -> UIView?
+    
+    /**
+     自定义点击选中view
+     - parameter chart:
+     
+     - returns:
+     */
+    @objc optional func depthChartTagView(chart: CHDepthChartView,Selected item: CHKDepthChartItem) -> UIView?
+```
+    
+---
+### 3、自定义样式
 ```swift
 // MARK: - 扩展样式
 extension CHKLineChartStyle {
