@@ -3,9 +3,19 @@
 ---
 ![image](https://github.com/mqtJS/DepthChart/blob/master/2018-05-25%2016_43_00.gif)
 ---
+## Requirements
+
+- iOS 8+
+- Xcode 8+
+- Swift 4.0+
+- iPhone/iPad
+
 ### 1、实现代理
-``` view.delegate = self ```
-``` //MARK:深度图表
+```swift
+view.delegate = self
+```
+```swift
+//MARK:深度图表
 extension ViewController: CHKDepthChartDelegate {
     
     
@@ -106,7 +116,8 @@ extension ViewController: CHKDepthChartDelegate {
 ```
 ---
 ### 2、自定义样式
-```// MARK: - 扩展样式
+```swift
+// MARK: - 扩展样式
 extension CHKLineChartStyle {
     
     
