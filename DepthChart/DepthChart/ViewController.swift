@@ -26,8 +26,7 @@ class ViewController: UIViewController {
     /// 卖单买单计算数据源时，注意计算那个数据也有先后的
     var bids = [MarketDepthData](){
         didSet{
-            let bid = self.bids.reversed() as [MarketDepthData]
-            self.decodeDatasToAppend(datas: bid, type: .bid)
+            self.decodeDatasToAppend(datas: bids.reversed(), type: .bid)
             self.depthChart.reloadData()
         }
     }
@@ -38,7 +37,7 @@ class ViewController: UIViewController {
                 self.depthDatas.removeAll()
             }
             self.maxAmount = 0
-            self.decodeDatasToAppend(datas: asks, type: .ask)
+             self.decodeDatasToAppend(datas: asks, type: .ask)
         }
     }
     
@@ -292,5 +291,26 @@ extension CHKLineChartStyle {
         return style
         
     }()
+}
+
+public extension CGFloat {
+    
+    /**
+     转化为字符串格式
+     
+     - parameter minF:
+     - parameter maxF:
+     - parameter minI:
+     
+     - returns:
+     */
+    func ch_toString(_ minF: Int = 2, maxF: Int = 6, minI: Int = 1) -> String {
+        let valueDecimalNumber = NSDecimalNumber(value: Double(self) as Double)
+        let twoDecimalPlacesFormatter = NumberFormatter()
+        twoDecimalPlacesFormatter.maximumFractionDigits = maxF
+        twoDecimalPlacesFormatter.minimumFractionDigits = minF
+        twoDecimalPlacesFormatter.minimumIntegerDigits = minI
+        return twoDecimalPlacesFormatter.string(from: valueDecimalNumber)!
+    }
 }
 

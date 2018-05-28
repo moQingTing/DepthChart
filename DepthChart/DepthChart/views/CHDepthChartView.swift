@@ -1,9 +1,9 @@
 //
-//  CHKLineChartStyle.swift
+//  CHDepthChartView.swift
 //  CHKLineChart
 //
-//  Created by 麦志泉 on 16/9/19.
-//  Copyright © 2016年 Chance. All rights reserved.
+//  Created by Chance on 2017/6/26.
+//  Copyright © 2017年 bitbank. All rights reserved.
 //
 
 import UIKit
@@ -36,7 +36,7 @@ open class CHKDepthChartItem: NSObject {
     open var amount: CGFloat = 0                             //数量
     open var depthAmount: CGFloat = 0                        //计算得到的深度
     open var type: CHKDepthChartItemType = .bid               //数据类型
-
+    
 }
 
 /// 坐标轴辅助线样式风格
@@ -79,7 +79,6 @@ public struct CHXAxis {
     /// 辅助线样式
     public var referenceStyle: CHAxisReferenceStyle = .none
 }
-
 
 /**
  *  深度图表数据源代理
@@ -176,7 +175,7 @@ public struct CHXAxis {
      
      - returns:
      */
-     @objc func depthChartOfDecimal(chart: CHDepthChartView) -> Int
+    @objc func depthChartOfDecimal(chart: CHDepthChartView) -> Int
     
     /**
      量的小数位长度
@@ -206,7 +205,7 @@ public struct CHXAxis {
 }
 
 open class CHDepthChartView: UIView {
-
+    
     /// MARK: - 常量
     open let kYAxisLabelWidth: CGFloat = 46        //默认宽度
     open let kXAxisHegiht: CGFloat = 16        //默认X坐标的高度
@@ -249,7 +248,7 @@ open class CHDepthChartView: UIView {
     
     //是否可点选
     open var enableTap: Bool = true
-
+    
     /// 显示边线上左下有
     open var borderWidth: (top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) = (0.25, 0.25, 0.25, 0.25)
     
@@ -257,7 +256,7 @@ open class CHDepthChartView: UIView {
     
     /// 档位个数
     var plotCount: Int = 0
-
+    
     open var labelSize = CGSize(width: 40, height: 16)
     
     /// 点击选中的点
@@ -268,7 +267,7 @@ open class CHDepthChartView: UIView {
     
     /// 点击选中的数据点view
     var selectedItemInfoLayer:CHShapeLayer?
-
+    
     //每个点的间隔宽度
     var plotWidth: CGFloat {
         if self.plotCount > 0 {
@@ -325,7 +324,7 @@ open class CHDepthChartView: UIView {
         super.awakeFromNib()
         self.initUI()
     }
-
+    
     
     /**
      初始化UI
@@ -397,6 +396,31 @@ open class CHDepthChartView: UIView {
         
         var depth: CGFloat = 0
         var start = 0, end = 0, step = 1
+//        if self.style.bidChartOnDirection == .left{
+//            if type == .bid {
+//                //买单深度是由价格大到小地累计
+//                start = items.count - 1
+//                end = 0
+//                step = -1
+//            } else {
+//                //卖单深度是由价格大到小地累计
+//                start = 0
+//                end = items.count - 1
+//                step = 1
+//            }
+//        }else{
+//            if type == .ask {
+//                //卖单深度是由价格大到小地累计
+//                start = items.count - 1
+//                end = 0
+//                step = -1
+//            } else {
+//                //买单深度是由价格大到小地累计
+//                start = 0
+//                end = items.count - 1
+//                step = 1
+//            }
+//        }
         if type == .bid {
             //买单深度是由价格大到小地累计
             start = items.count - 1
@@ -438,7 +462,7 @@ open class CHDepthChartView: UIView {
         if point.equalTo(CGPoint.zero) {
             return
         }
-
+        
         // 靠左间距
         let leftPadding = self.bounds.origin.x + self.padding.left
         
@@ -525,15 +549,15 @@ open class CHDepthChartView: UIView {
          当前y值的实际坐标 = 分区高度 + 分区y坐标 - paddingBottom - 当前y值的实际的相对y轴有值的区间的高度
          */
         let baseY = self.bounds.maxY - self.padding.bottom - (self.bounds.size.height - self.padding.top - self.padding.bottom) * (val - min) / (max - min)
-//        NSLog("self.bounds.size.height - self.padding.top - self.padding.bottom = \(self.bounds.size.height - self.padding.top - self.padding.bottom)")
-//        NSLog("fra.size.height = \(self.bounds.size.height)");
-//        NSLog("self.bounds.maxY = \(self.bounds.maxY)");
-//        NSLog("(self.padding.bottom) = \(self.padding.bottom)");
-//        NSLog("(val - min) = \((val - min))");
-//        NSLog("max - min = \(max - min)");
-//        NSLog("max = \(max)");
-//        NSLog("min = \(min)");
-//        NSLog("baseY = \(baseY)");
+        //        NSLog("self.bounds.size.height - self.padding.top - self.padding.bottom = \(self.bounds.size.height - self.padding.top - self.padding.bottom)")
+        //        NSLog("fra.size.height = \(self.bounds.size.height)");
+        //        NSLog("self.bounds.maxY = \(self.bounds.maxY)");
+        //        NSLog("(self.padding.bottom) = \(self.padding.bottom)");
+        //        NSLog("(val - min) = \((val - min))");
+        //        NSLog("max - min = \(max - min)");
+        //        NSLog("max = \(max)");
+        //        NSLog("min = \(min)");
+        //        NSLog("baseY = \(baseY)");
         return baseY
     }
     
@@ -570,10 +594,10 @@ extension CHDepthChartView {
     func removeLayerView() {
         _ = self.drawLayer.sublayers?.map { $0.removeFromSuperlayer() }
         self.drawLayer.sublayers?.removeAll()
-//        _ = self.bidsLayer.sublayers?.map { $0.removeFromSuperlayer() }
-//        self.bidsLayer.sublayers?.removeAll()
-//        _ = self.asksLayer.sublayers?.map { $0.removeFromSuperlayer() }
-//        self.asksLayer.sublayers?.removeAll()
+        //        _ = self.bidsLayer.sublayers?.map { $0.removeFromSuperlayer() }
+        //        self.bidsLayer.sublayers?.removeAll()
+        //        _ = self.asksLayer.sublayers?.map { $0.removeFromSuperlayer() }
+        //        self.asksLayer.sublayers?.removeAll()
     }
     
     /// 通过CALayer方式画图表
@@ -597,7 +621,7 @@ extension CHDepthChartView {
         
         //绘制X轴坐标系，先绘制辅助线，记录标签位置，
         //返回出来，最后才在需要显示的分区上绘制
-//        xAxisToDraw = self.drawXAxis(section)
+        //        xAxisToDraw = self.drawXAxis(section)
         
         //绘制图表的点线
         xAxisToDraw = self.drawChart()
@@ -614,7 +638,7 @@ extension CHDepthChartView {
         self.delegate?.didFinishDepthChartRefresh?(chart: self)
         
     }
-
+    
     
     /**
      绘制图表框
@@ -683,9 +707,9 @@ extension CHDepthChartView {
         borderLayer.fillColor = self.lineColor.cgColor // 闭环填充的颜色
         self.drawLayer.addSublayer(borderLayer)
         
-
+        
     }
-
+    
     
     /**
      初始化分区上XY轴的数值
@@ -705,7 +729,7 @@ extension CHDepthChartView {
         //计算x轴最大最小值
         self.yAxis.decimal = self.decimal
         self.yAxis.max = 0
-//        self.yAxis.min = CGFloat.greatestFiniteMagnitude
+        //        self.yAxis.min = CGFloat.greatestFiniteMagnitude
         self.yAxis.min = 0
         
         
@@ -772,7 +796,7 @@ extension CHDepthChartView {
         var step: CGFloat = 0       //递增值
         //计算y轴间断增值
         if let increaseValue = self.delegate?.incrementValueForYAxisInDepthChart?(in: self) {
-           
+            
             step = CGFloat(increaseValue)
             
         } else {
@@ -900,92 +924,92 @@ extension CHDepthChartView {
             
         }
     }
-
+    
     
     /**
      绘制X轴上的标签
      
      - parameter padding: 内边距
      - parameter width:   总宽度
- 
-    fileprivate func drawXAxis(_ section: CHSection) -> [(CGRect, String)] {
-        
-        var xAxisToDraw = [(CGRect, String)]()
-        
-        let xAxis = CHShapeLayer()
-        
-        var startX: CGFloat = section.frame.origin.x + section.padding.left
-        let endX: CGFloat = section.frame.origin.x + section.frame.size.width - section.padding.right
-        let secWidth: CGFloat = section.frame.size.width
-        let secPaddingLeft: CGFloat = section.padding.left
-        let secPaddingRight: CGFloat = section.padding.right
-        
-        //x轴分平均分4个间断，显示5个x轴坐标，按照图表的值个数，计算每个间断的个数
-        let dataRange = self.rangeTo - self.rangeFrom
-        let xTickInterval: Int = dataRange / self.xAxisPerInterval
-        
-        //绘制x轴标签
-        //每个点的间隔宽度
-        let perPlotWidth: CGFloat = (secWidth - secPaddingLeft - secPaddingRight) / CGFloat(self.rangeTo - self.rangeFrom)
-        let startY = section.frame.maxY
-        var k: Int = 0
-        var showXAxisReference = false
-        //相当 for var i = self.rangeFrom; i < self.rangeTo; i = i + xTickInterval
-        for i in stride(from: self.rangeFrom, to: self.rangeTo, by: xTickInterval) {
-            
-            let xLabel = self.delegate?.kLineChart?(chart: self, labelOnXAxisForIndex: i) ?? ""
-            var textSize = xLabel.ch_sizeWithConstrained(self.labelFont)
-            textSize.width = textSize.width + 4
-            var xPox = startX - textSize.width / 2 + perPlotWidth / 2
-            //计算最左最右的x轴标签不越过边界
-            if (xPox < 0) {
-                xPox = startX
-            } else if (xPox + textSize.width > endX) {
-                xPox = xPox - (xPox + textSize.width - endX)
-            }
-            //        NSLog(@"xPox = %f", xPox)
-            //        NSLog(@"textSize.width = %f", textSize.width)
-            let barLabelRect = CGRect(x: xPox, y: startY, width: textSize.width, height: textSize.height)
-            
-            //记录待绘制的文本
-            xAxisToDraw.append((barLabelRect, xLabel))
-            
-            //绘制辅助线
-            let referencePath = UIBezierPath()
-            let referenceLayer = CHShapeLayer()
-            referenceLayer.lineWidth = self.lineWidth
-            
-            //处理辅助线样式
-            switch section.xAxis.referenceStyle {
-            case let .dash(color: dashColor, pattern: pattern):
-                referenceLayer.strokeColor = dashColor.cgColor
-                referenceLayer.lineDashPattern = pattern
-                showXAxisReference = true
-            case let .solid(color: solidColor):
-                referenceLayer.strokeColor = solidColor.cgColor
-                showXAxisReference = true
-            default:
-                showXAxisReference = false
-            }
-            
-            //需要画x轴上的辅助线
-            if showXAxisReference {
-                referencePath.move(to: CGPoint(x: xPox + textSize.width / 2, y: section.frame.minY))
-                referencePath.addLine(to: CGPoint(x: xPox + textSize.width / 2, y: section.frame.maxY))
-                referenceLayer.path = referencePath.cgPath
-                xAxis.addSublayer(referenceLayer)
-            }
-            
-            
-            k = k + xTickInterval
-            startX = perPlotWidth * CGFloat(k)
-        }
-        
-        self.drawLayer.addSublayer(xAxis)
-        
-        return xAxisToDraw
-    }*/
- 
+     
+     fileprivate func drawXAxis(_ section: CHSection) -> [(CGRect, String)] {
+     
+     var xAxisToDraw = [(CGRect, String)]()
+     
+     let xAxis = CHShapeLayer()
+     
+     var startX: CGFloat = section.frame.origin.x + section.padding.left
+     let endX: CGFloat = section.frame.origin.x + section.frame.size.width - section.padding.right
+     let secWidth: CGFloat = section.frame.size.width
+     let secPaddingLeft: CGFloat = section.padding.left
+     let secPaddingRight: CGFloat = section.padding.right
+     
+     //x轴分平均分4个间断，显示5个x轴坐标，按照图表的值个数，计算每个间断的个数
+     let dataRange = self.rangeTo - self.rangeFrom
+     let xTickInterval: Int = dataRange / self.xAxisPerInterval
+     
+     //绘制x轴标签
+     //每个点的间隔宽度
+     let perPlotWidth: CGFloat = (secWidth - secPaddingLeft - secPaddingRight) / CGFloat(self.rangeTo - self.rangeFrom)
+     let startY = section.frame.maxY
+     var k: Int = 0
+     var showXAxisReference = false
+     //相当 for var i = self.rangeFrom; i < self.rangeTo; i = i + xTickInterval
+     for i in stride(from: self.rangeFrom, to: self.rangeTo, by: xTickInterval) {
+     
+     let xLabel = self.delegate?.kLineChart?(chart: self, labelOnXAxisForIndex: i) ?? ""
+     var textSize = xLabel.ch_sizeWithConstrained(self.labelFont)
+     textSize.width = textSize.width + 4
+     var xPox = startX - textSize.width / 2 + perPlotWidth / 2
+     //计算最左最右的x轴标签不越过边界
+     if (xPox < 0) {
+     xPox = startX
+     } else if (xPox + textSize.width > endX) {
+     xPox = xPox - (xPox + textSize.width - endX)
+     }
+     //        NSLog(@"xPox = %f", xPox)
+     //        NSLog(@"textSize.width = %f", textSize.width)
+     let barLabelRect = CGRect(x: xPox, y: startY, width: textSize.width, height: textSize.height)
+     
+     //记录待绘制的文本
+     xAxisToDraw.append((barLabelRect, xLabel))
+     
+     //绘制辅助线
+     let referencePath = UIBezierPath()
+     let referenceLayer = CHShapeLayer()
+     referenceLayer.lineWidth = self.lineWidth
+     
+     //处理辅助线样式
+     switch section.xAxis.referenceStyle {
+     case let .dash(color: dashColor, pattern: pattern):
+     referenceLayer.strokeColor = dashColor.cgColor
+     referenceLayer.lineDashPattern = pattern
+     showXAxisReference = true
+     case let .solid(color: solidColor):
+     referenceLayer.strokeColor = solidColor.cgColor
+     showXAxisReference = true
+     default:
+     showXAxisReference = false
+     }
+     
+     //需要画x轴上的辅助线
+     if showXAxisReference {
+     referencePath.move(to: CGPoint(x: xPox + textSize.width / 2, y: section.frame.minY))
+     referencePath.addLine(to: CGPoint(x: xPox + textSize.width / 2, y: section.frame.maxY))
+     referenceLayer.path = referencePath.cgPath
+     xAxis.addSublayer(referenceLayer)
+     }
+     
+     
+     k = k + xTickInterval
+     startX = perPlotWidth * CGFloat(k)
+     }
+     
+     self.drawLayer.addSublayer(xAxis)
+     
+     return xAxisToDraw
+     }*/
+    
     
     /// 绘制X坐标标签
     ///
@@ -1031,7 +1055,7 @@ extension CHDepthChartView {
         self.drawLayer.addSublayer(xAxis)
         //        context?.strokePath()
     }
-
+    
     /**
      绘制点击选中标记图形
      - parameter section:
@@ -1103,12 +1127,12 @@ extension CHDepthChartView {
                 frame.origin.x = point.x + 10
             }
         }
-       
+        
         if let view = self.delegate?.depthChartShowItemView?(chart: self, Selected: item) {
             if self.selectedItemInfoLayer == nil{
-                 self.selectedItemInfoLayer = CHShapeLayer()
+                self.selectedItemInfoLayer = CHShapeLayer()
             }
-             _ = self.selectedItemInfoLayer!.sublayers?.map { $0.removeFromSuperlayer() }
+            _ = self.selectedItemInfoLayer!.sublayers?.map { $0.removeFromSuperlayer() }
             self.selectedItemInfoLayer!.frame = frame
             self.selectedItemInfoLayer!.addSublayer(view.layer)
             self.drawLayer.addSublayer(self.selectedItemInfoLayer!)
@@ -1271,19 +1295,19 @@ extension CHDepthChartView {
             let asksY = bidsY
             let asksRect = CGRect(x: asksX, y: asksY, width: 60, height: 18)
             xAxisToDraw.append((asksRect, self.askItems[self.askItems.endIndex - 1].value.ch_toString()))
-
+            
             return xAxisToDraw
         }
-//        //绘制买方深度图层
-//        if let bidChartLayer = self.drawDepthChart(items: self.bidItems, startIndex: 0, strokeColor: self.bidColor.stroke, fillColor: self.bidColor.fill, lineWidth: self.bidColor.lineWidth) {
-//            self.drawLayer.addSublayer(bidChartLayer)
-//            startIndex = self.bidItems.count
-//        }
-//
-//        //绘制卖方深度图层
-//        if let askChartLayer = self.drawDepthChart(items: self.askItems, startIndex: startIndex, strokeColor: self.askColor.stroke, fillColor: self.askColor.fill, lineWidth: self.askColor.lineWidth) {
-//            self.drawLayer.addSublayer(askChartLayer)
-//        }
+        //        //绘制买方深度图层
+        //        if let bidChartLayer = self.drawDepthChart(items: self.bidItems, startIndex: 0, strokeColor: self.bidColor.stroke, fillColor: self.bidColor.fill, lineWidth: self.bidColor.lineWidth) {
+        //            self.drawLayer.addSublayer(bidChartLayer)
+        //            startIndex = self.bidItems.count
+        //        }
+        //
+        //        //绘制卖方深度图层
+        //        if let askChartLayer = self.drawDepthChart(items: self.askItems, startIndex: startIndex, strokeColor: self.askColor.stroke, fillColor: self.askColor.fill, lineWidth: self.askColor.lineWidth) {
+        //            self.drawLayer.addSublayer(askChartLayer)
+        //        }
     }
     
     
@@ -1447,25 +1471,4 @@ extension CHDepthChartView: UIGestureRecognizerDelegate {
     
     
     
-}
-
-public extension CGFloat {
-    
-    /**
-     转化为字符串格式
-     
-     - parameter minF:
-     - parameter maxF:
-     - parameter minI:
-     
-     - returns:
-     */
-    func ch_toString(_ minF: Int = 2, maxF: Int = 6, minI: Int = 1) -> String {
-        let valueDecimalNumber = NSDecimalNumber(value: Double(self) as Double)
-        let twoDecimalPlacesFormatter = NumberFormatter()
-        twoDecimalPlacesFormatter.maximumFractionDigits = maxF
-        twoDecimalPlacesFormatter.minimumFractionDigits = minF
-        twoDecimalPlacesFormatter.minimumIntegerDigits = minI
-        return twoDecimalPlacesFormatter.string(from: valueDecimalNumber)!
-    }
 }
