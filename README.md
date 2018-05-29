@@ -1,7 +1,10 @@
 # DepthChart 深度图
-***注意：该深度图横坐标是以档位为单位，纵坐标是以档位数量为单位***
+***注意：图1深度图横坐标是以档位为单位，纵坐标是以档位数量为单位 ，图2深度图横坐标是以价格占比进行划分，中间可能有缺口出现，纵坐标是以档位数量为单位（代码在DepthChart_price文件夹里）***
 ---
 ![image](https://github.com/mqtJS/DepthChart/blob/master/2018-05-25%2016_43_00.gif)
+
+
+![image](https://github.com/mqtJS/DepthChart/blob/master/depthChart2.gif)
 ---
 ## Requirements
 
