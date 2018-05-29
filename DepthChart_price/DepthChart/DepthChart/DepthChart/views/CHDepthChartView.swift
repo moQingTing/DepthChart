@@ -232,7 +232,7 @@ open class CHDepthChartView: UIView {
     open var padding: UIEdgeInsets = UIEdgeInsets.zero
     
     /// 显示y的位置，默认右边
-    open var showYAxisLabel = CHYAxisShowPosition.right
+    open var showYAxisLabel = CHYAxisShowPosition.left
     
     /// 是否把y坐标内嵌到图表仲
     open var isInnerYAxis: Bool = false
@@ -265,6 +265,18 @@ open class CHDepthChartView: UIView {
     
     /// 价格范围
     var priceRange:CGFloat = 0
+    
+    /// 左定点x坐标
+    var leftX:CGFloat = 0
+    
+    /// 右定点x坐标
+    var rightX:CGFloat = 0
+    
+    /// 买单每个档位的宽度
+    var bidPlotWidth:CGFloat = 0
+    
+    /// 卖单每个档位的宽度
+     var askPlotWidth:CGFloat = 0
     
     open var labelSize = CGSize(width: 40, height: 16)
     
@@ -442,18 +454,6 @@ open class CHDepthChartView: UIView {
                 step = 1
             }
         }
-//        if type == .bid {
-//            //买单深度是由价格大到小地累计
-//            start = items.count - 1
-//            end = 0
-//            step = -1
-//        } else {
-//            //卖单深度是由价格大到小地累计
-//            start = 0
-//            end = items.count - 1
-//            step = 1
-//        }
-        
         for i in stride(from: start, through: end, by: step) {
             let item = items[i]
             let amount = item.amount
@@ -486,47 +486,65 @@ open class CHDepthChartView: UIView {
         
         // 靠左间距
         let leftPadding = self.bounds.origin.x + self.padding.left
-        let yAxisLabelWidth = self.isInnerYAxis ? self.yAxisLabelWidth : 0
-        //  计算点击的点是否在深度图上,点击两侧的边不算在点击范围内
-        if (point.x - leftPadding) <= 0 || (point.x - (self.bounds.size.width - leftPadding - yAxisLabelWidth) < 0){
+        let yAxisLabelWidth = self.isInnerYAxis ? 0 : self.yAxisLabelWidth
+        let chartWidth = self.bounds.size.width - self.padding.left - yAxisLabelWidth
+        //  计算点击的点是否在深度图上,点击两侧的边和中间都不算在点击范围内
+        if (point.x - leftPadding) <= 0 || (point.x - (chartWidth) > 0) || (self.leftX <= point.x && point.x <= self.rightX){
             return
         }
         
         self.selectedPoint = point
         
-        // 点击范围
-        let xRange:CGFloat = point.x - leftPadding - yAxisLabelWidth
-        
         // 数据下标
         var index = -1
         
-        // 获取余数，利用余数定位是第几个数据
-        let remainder = xRange.truncatingRemainder(dividingBy: self.plotWidth)
-        
-        if remainder != 0{
-            index = Int(xRange / self.plotWidth) + 1
-        }else{
-            index = Int(xRange / self.plotWidth)
-        }
-        print("点击深度 index == \(index)")
-        
         // 点击选中的item
         var selectedItem:CHKDepthChartItem?
+        
         // 判断买单还是卖单
         if self.bidChartOnDirection == .left{
-            if index <= self.bidItems.count{
-                selectedItem = self.bidItems[index - 1]
+            if point.x < self.leftX{
+                let rangeX = point.x - 0
+                index = Int(rangeX / self.bidPlotWidth)
+                //越界处理
+                if index > self.bidItems.count - 1{
+                    selectedItem = self.bidItems[self.bidItems.count - 1]
+                }else{
+                    selectedItem = self.bidItems[index]
+                }
             }else{
-                selectedItem = self.askItems[index - self.bidItems.count - 1]
+                let rangeX = point.x - self.rightX
+                index = Int(rangeX / self.askPlotWidth)
+                //越界处理
+                if index > self.askItems.count - 1{
+                     selectedItem = self.askItems[self.askItems.count - 1]
+                }else{
+                     selectedItem = self.askItems[index]
+                }
             }
         }else{
-            if index <= self.askItems.count{
-                selectedItem = self.askItems[index - 1]
+            if point.x < self.leftX{
+                let rangeX = point.x - self.rightX
+                index = Int(rangeX / self.askPlotWidth)
+                //越界处理
+                if index > self.askItems.count - 1{
+                    selectedItem = self.askItems[self.askItems.count - 1]
+                }else{
+                    selectedItem = self.askItems[index]
+                }
             }else{
-                selectedItem = self.bidItems[index - self.askItems.count - 1]
+                let rangeX = point.x - 0
+                index = Int(rangeX / self.bidPlotWidth)
+                selectedItem = self.bidItems[index]
+                //越界处理
+                if index > self.bidItems.count - 1{
+                    selectedItem = self.bidItems[self.bidItems.count - 1]
+                }else{
+                    selectedItem = self.bidItems[index]
+                }
             }
         }
-        
+         print("点击深度 index == \(index)")
         guard let item = selectedItem else{
             return
         }
@@ -1246,37 +1264,35 @@ extension CHDepthChartView {
             xAxisToDraw.append((bidsRect, self.bidItems[self.bidItems.startIndex].value.ch_toString()))
             
             //绘制买方深度图层
-            let rangeBidX = (self.bidItems[self.bidItems.endIndex - 1].value - self.lowPrice) / self.priceRange * (chartWidth)
-            let plotWidthBid = rangeBidX / CGFloat(self.bidItems.count)
+            self.leftX = (self.bidItems[self.bidItems.endIndex - 1].value - self.lowPrice) / self.priceRange * (chartWidth)
+            self.bidPlotWidth = self.leftX / CGFloat(self.bidItems.count)
             
-            let buy1X = self.bounds.origin.x + self.padding.left + rangeBidX - 60 - 8
+            let buy1X = self.bounds.origin.x + self.padding.left + self.leftX - 60 - 8
             let buy1Y = bidsY
             let buy1Rect = CGRect(x: buy1X, y: buy1Y, width: 60, height: 18)
             xAxisToDraw.append((buy1Rect, self.bidItems[self.bidItems.endIndex - 1].value.ch_toString()))
             
-            if let bidChartLayer = self.drawDepthChart(items: self.bidItems, startX: 0, plotWidth: plotWidthBid, strokeColor: self.bidColor.stroke, fillColor: self.bidColor.fill, lineWidth: self.bidColor.lineWidth) {
+            if let bidChartLayer = self.drawDepthChart(items: self.bidItems, startX: 0, plotWidth: self.bidPlotWidth, strokeColor: self.bidColor.stroke, fillColor: self.bidColor.fill, lineWidth: self.bidColor.lineWidth) {
                 self.drawLayer.addSublayer(bidChartLayer)
                 //                startIndex = self.bidItems.count
             }
             
-            //中间价格坐标/
-            
             //绘制卖方深度图层
-            let rangeAskX = ((self.askItems[self.askItems.startIndex].value - self.lowPrice) / self.priceRange * (chartWidth))
-            let plotWidthAsk = (chartWidth -  rangeBidX) / CGFloat(self.bidItems.count)
+            self.rightX = ((self.askItems[self.askItems.startIndex].value - self.lowPrice) / self.priceRange * (chartWidth))
+            self.askPlotWidth = (chartWidth -  self.rightX) / CGFloat(self.askItems.count)
             
-            let sell1X = self.bounds.origin.x + self.padding.left + rangeAskX + 8
+            let sell1X = self.bounds.origin.x + self.padding.left + self.rightX + 8
             let sell1Y = bidsY
             let sell1Rect = CGRect(x: sell1X, y: sell1Y, width: 60, height: 18)
             xAxisToDraw.append((sell1Rect, self.askItems[self.askItems.startIndex].value.ch_toString()))
             
-            if let askChartLayer = self.drawDepthChart(items: self.askItems, startX: rangeAskX, plotWidth: plotWidthAsk, strokeColor: self.askColor.stroke, fillColor: self.askColor.fill, lineWidth: self.askColor.lineWidth) {
+            if let askChartLayer = self.drawDepthChart(items: self.askItems, startX: self.rightX, plotWidth: self.askPlotWidth, strokeColor: self.askColor.stroke, fillColor: self.askColor.fill, lineWidth: self.askColor.lineWidth) {
                 self.drawLayer.addSublayer(askChartLayer)
                 //                startIndex += self.askItems.count
             }
             
             //卖单价格坐标/值
-            let asksX = rangeAskX + CGFloat(self.askItems.count) * plotWidthAsk - 60
+            let asksX = self.rightX + CGFloat(self.askItems.count) * self.askPlotWidth - 60
             let asksY = bidsY
             let asksRect = CGRect(x: asksX, y: asksY, width: 60, height: 18)
             xAxisToDraw.append((asksRect, self.askItems[self.askItems.endIndex - 1].value.ch_toString()))
@@ -1290,35 +1306,35 @@ extension CHDepthChartView {
             xAxisToDraw.append((asksRect, self.askItems[self.askItems.endIndex - 1].value.ch_toString()))
             
             //绘制买方深度图层
-            let rangeAskX = (self.heightPrice - self.askItems[self.askItems.startIndex].value ) / self.priceRange * (chartWidth)
-            let plotWidthAsk = rangeAskX / CGFloat(self.askItems.count)
+            self.leftX = (self.heightPrice - self.askItems[self.askItems.startIndex].value ) / self.priceRange * (chartWidth)
+            self.askPlotWidth = self.leftX / CGFloat(self.askItems.count)
             
-            let sell1X = self.bounds.origin.x + self.padding.left + rangeAskX - 60 - 8
+            let sell1X = self.bounds.origin.x + self.padding.left + self.leftX - 60 - 8
             let sell1Y = asksY
             let sell1Rect = CGRect(x: sell1X, y: sell1Y, width: 60, height: 18)
             xAxisToDraw.append((sell1Rect, self.askItems[self.askItems.startIndex].value.ch_toString()))
             
-            if let askChartLayer = self.drawDepthChart(items: self.askItems, startX: 0, plotWidth: plotWidthAsk, strokeColor: self.askColor.stroke, fillColor: self.askColor.fill, lineWidth: self.askColor.lineWidth) {
+            if let askChartLayer = self.drawDepthChart(items: self.askItems, startX: 0, plotWidth: self.askPlotWidth, strokeColor: self.askColor.stroke, fillColor: self.askColor.fill, lineWidth: self.askColor.lineWidth) {
                 self.drawLayer.addSublayer(askChartLayer)
             }
             
             
             //绘制卖方深度图层
-            let rangeBidX = ((self.heightPrice - self.bidItems[self.bidItems.endIndex - 1].value) / self.priceRange * (chartWidth))
-            let plotWidthBid = (chartWidth -  rangeBidX) / CGFloat(self.bidItems.count)
+            self.rightX = ((self.heightPrice - self.bidItems[self.bidItems.endIndex - 1].value) / self.priceRange * (chartWidth))
+            self.bidPlotWidth = (chartWidth -  self.rightX) / CGFloat(self.bidItems.count)
             
-            let buy1X = self.bounds.origin.x + self.padding.left + rangeBidX + 8
+            let buy1X = self.bounds.origin.x + self.padding.left + self.rightX + 8
             let buy1Y = asksY
             let buy1Rect = CGRect(x: buy1X, y: buy1Y, width: 60, height: 18)
             xAxisToDraw.append((buy1Rect, self.bidItems[self.bidItems.endIndex - 1].value.ch_toString()))
             
-            if let bidChartLayer = self.drawDepthChart(items: self.bidItems, startX: rangeBidX, plotWidth: plotWidthBid, strokeColor: self.bidColor.stroke, fillColor: self.bidColor.fill, lineWidth: self.bidColor.lineWidth) {
+            if let bidChartLayer = self.drawDepthChart(items: self.bidItems, startX: self.rightX, plotWidth: self.bidPlotWidth, strokeColor: self.bidColor.stroke, fillColor: self.bidColor.fill, lineWidth: self.bidColor.lineWidth) {
                 self.drawLayer.addSublayer(bidChartLayer)
                 //                startIndex += self.askItems.count
             }
             
             //卖单价格坐标/值
-            let bidsX = rangeAskX + CGFloat(self.bidItems.count) * plotWidthBid - 60
+            let bidsX = self.rightX + CGFloat(self.bidItems.count) * self.bidPlotWidth - 60
             let bidsY = asksY
             let bidsRect = CGRect(x: bidsX, y: bidsY, width: 60, height: 18)
             xAxisToDraw.append((bidsRect, self.bidItems[self.bidItems.startIndex].value.ch_toString()))
