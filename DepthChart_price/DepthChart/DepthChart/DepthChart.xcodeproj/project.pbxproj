@@ -208,7 +208,7 @@
 				048DB45720B7EDC7001B14EF /* Sources */,
 				048DB45820B7EDC7001B14EF /* Frameworks */,
 				048DB45920B7EDC7001B14EF /* Resources */,
-				BA021EF088CF0B4EFEECD716 /* [CP] Embed Pods Frameworks */,
+				89A3946731D4AC2C499EA8AE /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -267,13 +267,16 @@
 				TargetAttributes = {
 					048DB45A20B7EDC7001B14EF = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1010;
 					};
 					048DB46E20B7EDCB001B14EF = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1010;
 						TestTargetID = 048DB45A20B7EDC7001B14EF;
 					};
 					048DB47920B7EDCB001B14EF = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1010;
 						TestTargetID = 048DB45A20B7EDC7001B14EF;
 					};
 				};
@@ -348,10 +351,12 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BA021EF088CF0B4EFEECD716 /* [CP] Embed Pods Frameworks */ = {
+		89A3946731D4AC2C499EA8AE /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			inputFileListPaths = (
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-DepthChart/Pods-DepthChart-frameworks.sh",
@@ -359,6 +364,8 @@
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
@@ -564,7 +571,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.DepthChart;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -584,7 +591,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.DepthChart;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -604,7 +611,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.DepthChartTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DepthChart.app/DepthChart";
 			};
@@ -625,7 +632,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.DepthChartTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DepthChart.app/DepthChart";
 			};
@@ -645,7 +652,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.DepthChartUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = DepthChart;
 			};
@@ -665,7 +672,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.DepthChartUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = DepthChart;
 			};

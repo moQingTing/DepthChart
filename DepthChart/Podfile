@@ -3,7 +3,7 @@ platform:ios, 9.0
 use_frameworks!
 
 target "DepthChart" do 
-pod 'SnapKit', '~> 4.0.0'
+pod 'SnapKit'
  # swift解析json库
 pod 'SwiftyJSON'
 end
